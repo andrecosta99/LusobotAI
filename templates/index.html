@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luso-Bot</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #chatbox {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #e9ecef;
+        }
+        .userText, .botText {
+            font-family: monospace;
+            font-size: 17px;
+            line-height: 30px;
+        }
+        .userText span, .botText span {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 20px;
+            margin-bottom: 5px;
+        }
+        .userText span {
+            background-color: #007bff; /* Blue */
+            color: white;
+        }
+        .botText span {
+            background-color: #28a745; /* Green */
+            color: white;
+        }
+        .clear-btn {
+            width: 100%;
+            margin-top: 10px;
+            background-color: #dc3545; /* Red */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #textInput {
+            width: 100%;
+            border-radius: 5px;
+            padding: 10px;
+            border: 2px solid #007bff; /* Blue */
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-container" style="text-align: center; margin-bottom: 10px; margin-top: 40px;">
+        <img src="/static/lusofonasquare-xl.png" alt="Luso-Bot Profile"
+             style="width: 75px; height: 75px; border-radius: 50%; margin-bottom: 15px; ">
+        <h1>Lusobot AI</h1>
+    </div>
+
+
+    <div class="chat-container">
+        <div id="chatbox">
+            <p class="botText"><span>Hi! I'm your AI Chatbot</span></p>
+            <!-- Chat messages will appear here -->
+        </div>
+        <input id="textInput" type="text" name="msg" placeholder="Type your message here..." class="form-control">
+        <button class="clear-btn" onclick="clearChat()">Clear Chat</button>
+    </div>
+</div> <br>
+
+<script>
+        function getBotResponse() {
+            var rawText = $("#textInput").val();
+            var userHtml = '<p class="userText"><span>' + rawText + '</span></p>';
+            $("#textInput").val("");
+            $("#chatbox").append(userHtml);
+            document.getElementById("chatbox").scrollTop = document.getElementById("chatbox").scrollHeight;
+
+            $.get("/get", { msg: rawText }).done(function (data) {
+                var botHtml = '<p class="botText"><span>' + data + '</span></p>';
+                $("#chatbox").append(botHtml);
+                document.getElementById("chatbox").scrollTop = document.getElementById("chatbox").scrollHeight;
+            });
+        }
+
+        function clearChat() {
+            $("#chatbox").empty();
+        }
+
+        $("#textInput").keypress(function (e) {
+            if (e.which == 13) {
+                getBotResponse();
+            }
+        });
+
+</script>
+
+</body>
+</html>
